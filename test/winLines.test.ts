@@ -8,11 +8,11 @@ test('WIN_LINES', async (t) => {
     assert.equal(WIN_LINES.length, 20);
   });
 
-  await t.test('every line has 4 unique in-bounds coordinates', () => {
+  await t.test(`every line has ${BOARD_SIZE} unique in-bounds coordinates`, () => {
     for (const line of WIN_LINES) {
-      assert.equal(line.length, 4);
+      assert.equal(line.length, BOARD_SIZE);
       const uniqueCoords = new Set(line.map(([r, c]) => `${r},${c}`));
-      assert.equal(uniqueCoords.size, 4, 'Coordinates must be unique');
+      assert.equal(uniqueCoords.size, BOARD_SIZE, 'Coordinates must be unique');
       for (const [r, c] of line) {
         assert.ok(r >= 0 && r < BOARD_SIZE, `Row ${r} out of bounds`);
         assert.ok(c >= 0 && c < BOARD_SIZE, `Col ${c} out of bounds`);

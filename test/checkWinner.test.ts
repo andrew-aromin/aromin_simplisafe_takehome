@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TicTacToe } from '../src/TicTacToe.ts';
+import { TicTacToe } from '../src/index.ts';
 import { boardFromString as board } from './helpers/boardFromString.ts';
 
 test('checkWinner', async (t) => {
@@ -78,5 +78,21 @@ test('checkWinner', async (t) => {
     
     const game2 = new TicTacToe(board('OOOO/XXXX/..../....'));
     assert.equal(game2.checkWinner(), 'O');
+  });
+
+  await t.test('Custom win lines (empty line)', () => {
+    const game = new TicTacToe(board('XXXX/..../..../....'), [[]]);
+    assert.equal(game.checkWinner(), null);
+  });
+
+  await t.test('Custom win lines (out of bounds line)', () => {
+    const game = new TicTacToe(board('XXXX/..../..../....'), [[[4, 4], [0, 0]]]);
+    assert.equal(game.checkWinner(), null);
+  });
+
+  await t.test('Memoization works for checkWinner', () => {
+    const game = new TicTacToe(board('XXXX/..../..../....'));
+    assert.equal(game.checkWinner(), 'X');
+    assert.equal(game.checkWinner(), 'X');
   });
 });

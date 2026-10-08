@@ -11,7 +11,7 @@ export function validateBoard(input: unknown): Board {
     throw new BoardValidationError(`Board must be an array of ${BOARD_SIZE} rows`);
   }
   
-  const rows = new Array<Row>(BOARD_SIZE);
+  const rows: Row[] = new Array(BOARD_SIZE);
   
   for (let r = 0; r < BOARD_SIZE; r++) {
     const row: unknown = input[r];
@@ -19,7 +19,7 @@ export function validateBoard(input: unknown): Board {
       throw new BoardValidationError(`Row ${r} must be an array of ${BOARD_SIZE} cells`);
     }
     
-    const cells = new Array<Cell>(BOARD_SIZE);
+    const cells: Cell[] = new Array(BOARD_SIZE);
     for (let c = 0; c < BOARD_SIZE; c++) {
       const cell: unknown = row[c];
       if (!isCell(cell)) {
@@ -28,10 +28,10 @@ export function validateBoard(input: unknown): Board {
       cells[c] = cell;
     }
     
-    rows[r] = Object.freeze(cells) as unknown as Row;
+    rows[r] = Object.freeze(cells);
   }
   
-  return Object.freeze(rows) as unknown as Board;
+  return Object.freeze(rows);
 }
 
 const isCell = (v: unknown): v is Cell => v === null || v === 'X' || v === 'O';
