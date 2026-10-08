@@ -41,7 +41,7 @@ nvm use 22
 
 ```typescript
 import { TicTacToe } from './src/index.ts';
-import type { Board } from './src/index.ts';
+import type { Board, WinLine } from './src/index.ts';
 
 // 1. Define a 4x4 board (array of 4 rows, each with 4 cells)
 // Cells can be 'X', 'O', or null
@@ -59,14 +59,22 @@ const game = new TicTacToe(board);
 console.log(game.checkWinner()); // 'X' (won on the main diagonal)
 console.log(game.isGameOver());  // true
 console.log(game.anyMovesLeft()); // true
+
+// 4. (Optional) Inject custom win lines
+const customLines: readonly WinLine[] = [
+  [[0, 0], [1, 1], [2, 2], [3, 3]] // e.g., only the main diagonal wins
+];
+const customGame = new TicTacToe(board, customLines);
 ```
 
 ## Design Notes
 
-- **Data-Driven Win Lines**: Rather than hardcoding nested `if` statements, the 20 possible win conditions (4 rows, 4 columns, 2 diagonals, 1 corners, 9 boxes) are pre-calculated at startup as coordinate lists. `checkWinner()` simply iterates through this frozen array of 20 lines. Adding new win conditions only requires adding coordinates to the array.
-- **Immutability & Defensive Copying**: The `TicTacToe` class is immutable. The board is deeply cloned and frozen on instantiation. This prevents the caller from mutating the board out from under the solver, bypassing validation.
+- **Data-Driven & Injectable Win Lines**: Rather than hardcoding nested `if` statements, the 20 possible win conditions (4 rows, 4 columns, 2 diagonals, 1 corners, 9 boxes) are pre-calculated at startup as coordinate lists. `checkWinner()` simply iterates through this array. The constructor also accepts an optional array of custom win lines, allowing the solver to support arbitrary board rules without modifying the source code.
+- **Memoization**: Game state queries (`checkWinner()`, `anyMovesLeft()`) are lazily evaluated and internally memoized since the board is immutable, ensuring subsequent calls are O(1).
+- **Strict Type Definitions**: The board structure is strictly typed as a 4x4 tuple (`readonly [Row, Row, Row, Row]`), providing maximum compile-time safety and IDE support.
+- **Immutability & Defensive Copying**: The `TicTacToe` class is immutable from the outside. The board is deeply cloned and frozen on instantiation. This prevents the caller from mutating the board out from under the solver, bypassing validation.
 - **Strict Validation**: The board is strictly validated at runtime (not just compile-time). Sparse arrays, prototype pollution attempts, or invalid values like `undefined` or `'x'` are explicitly rejected.
-- **Test Tooling**: We use Node's native test runner (`node:test`) and native type stripping to avoid bringing in large, complex dependencies like Jest or ts-node.
+- **Test Tooling**: We use Node's native test runner (`node:test`) and native type stripping (with `erasableSyntaxOnly`) to avoid bringing in large, complex dependencies like Jest or ts-node.
 
 ## Security Measures
 
@@ -82,6 +90,7 @@ console.log(game.anyMovesLeft()); // true
 The solution was built using Test-Driven Development (TDD). The test suite includes full coverage for:
 - Validation errors and input edge cases
 - All win conditions (horizontal, vertical, diagonal, corners, all 9 boxes)
+- Custom injected win lines
 - Draw conditions and edge-cases (L-shapes, missing pieces)
 - Determinisim (if multiple players technically have a win line on a malformed board)
 - Immutable state guarantees
