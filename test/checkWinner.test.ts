@@ -1,6 +1,11 @@
+/**
+ * Unit tests for the checkWinner method of the TicTacToe class.
+ * Tests all possible winning conditions (rows, columns, diagonals, corners, 2x2 boxes)
+ * and edge cases like draws, no-winners, and memoization.
+ */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TicTacToe } from '../src/index.ts';
+import { TicTacToe, type WinLine } from '../src/index.ts';
 import { boardFromString as board } from './helpers/boardFromString.ts';
 
 test('checkWinner', async (t) => {
@@ -86,7 +91,7 @@ test('checkWinner', async (t) => {
   });
 
   await t.test('Custom win lines (out of bounds line)', () => {
-    const game = new TicTacToe(board('XXXX/..../..../....'), [[[4, 4], [0, 0]]]);
+    const game = new TicTacToe(board('XXXX/..../..../....'), [[[4, 4], [0, 0]]] as unknown as WinLine[]);
     assert.equal(game.checkWinner(), null);
   });
 

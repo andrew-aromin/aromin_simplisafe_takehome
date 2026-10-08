@@ -5,8 +5,14 @@ import { BoardValidationError } from './errors.ts';
 /**
  * Validates untrusted input and returns a deep-frozen copy.
  * Reads each cell exactly once, so getters/Proxies can't change values after validation.
+ * Ensures the board is exactly BOARD_SIZE x BOARD_SIZE and contains only valid Cell values.
+ * 
+ * @param input - The untrusted board data to validate
+ * @returns A validated, deep-frozen Board object
+ * @throws {BoardValidationError} If the board structure or cell values are invalid
  */
 export function validateBoard(input: unknown): Board {
+  // Validate that the main board is an array of the correct size
   if (!Array.isArray(input) || input.length !== BOARD_SIZE) {
     throw new BoardValidationError(`Board must be an array of ${BOARD_SIZE} rows`);
   }
@@ -28,10 +34,10 @@ export function validateBoard(input: unknown): Board {
       cells[c] = cell;
     }
     
-    rows[r] = Object.freeze(cells);
+    rows[r] = Object.freeze(cells) as unknown as Row;
   }
   
-  return Object.freeze(rows);
+  return Object.freeze(rows) as unknown as Board;
 }
 
 const isCell = (v: unknown): v is Cell => v === null || v === 'X' || v === 'O';

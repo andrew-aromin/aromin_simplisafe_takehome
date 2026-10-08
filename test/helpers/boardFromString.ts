@@ -17,5 +17,5 @@ export function boardFromString(str: string): Board {
       if (char === '.') return null;
       throw new Error(`Invalid char ${char}`);
     }) as Cell[];
-  }) as Board;
+  }) as unknown as Board;
 }

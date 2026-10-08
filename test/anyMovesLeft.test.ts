@@ -1,3 +1,7 @@
+/**
+ * Unit tests for the anyMovesLeft method of the TicTacToe class.
+ * Ensures the game correctly identifies when the board is full or has remaining empty cells.
+ */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TicTacToe } from '../src/index.ts';

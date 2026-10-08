@@ -1,3 +1,8 @@
+/**
+ * Unit tests for the isGameOver method of the TicTacToe class.
+ * Verifies that the game correctly reports completion when someone wins
+ * or when there are no moves left (a draw).
+ */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TicTacToe } from '../src/TicTacToe.ts';

@@ -1,3 +1,8 @@
+/**
+ * Unit tests for the boardFromString helper.
+ * Verifies that the string parser correctly handles valid inputs and throws
+ * appropriate errors for invalid formats or characters.
+ */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { boardFromString } from './boardFromString.ts';

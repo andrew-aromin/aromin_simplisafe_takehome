@@ -2,10 +2,20 @@ import type { Board, Player, WinLine } from './types.ts';
 import { WIN_LINES } from './winLines.ts';
 import { validateBoard } from './validateBoard.ts';
 
+/**
+ * Core game logic class for Tic-Tac-Toe.
+ * Encapsulates the board state and provides methods to evaluate win conditions
+ * and overall game status.
+ */
 export class TicTacToe {
   readonly #board: Board;
   readonly #winLines: readonly WinLine[];
 
+  /**
+   * Initializes a new game instance.
+   * @param board - The board state to evaluate. Will be validated.
+   * @param winLines - The winning line configurations (defaults to standard rules).
+   */
   constructor(board: unknown, winLines: readonly WinLine[] = WIN_LINES) {
     // Also validates at runtime: the TS types don't protect plain-JS or deserialized-JSON callers.
     this.#board = validateBoard(board);
