@@ -7,7 +7,7 @@ import { BoardValidationError } from './errors.ts';
  * Reads each cell exactly once, so getters/Proxies can't change values after validation.
  * Ensures the board is exactly BOARD_SIZE x BOARD_SIZE and contains only valid Cell values.
  * 
- * @param input - The untrusted board data to validate
+ * @param input - The untrusted board data to validate. Don't cast to a raw array to prevent getter/proxy trap
  * @returns A validated, deep-frozen Board object
  * @throws {BoardValidationError} If the board structure or cell values are invalid
  */
@@ -27,16 +27,17 @@ export function validateBoard(input: unknown): Board {
     
     const cells: Cell[] = new Array(BOARD_SIZE);
     for (let c = 0; c < BOARD_SIZE; c++) {
+      // avoid getter/Proxy trap by accessing unknown values only once
       const cell: unknown = row[c];
       if (!isCell(cell)) {
         throw new BoardValidationError(`Invalid cell at (${r}, ${c}); expected 'X', 'O', or null`);
       }
       cells[c] = cell;
     }
-    
+    // freeze the values to prevent any tampering
     rows[r] = Object.freeze(cells) as unknown as Row;
   }
-  
+  // freeze the entire board to prevent any tampering
   return Object.freeze(rows) as unknown as Board;
 }
 

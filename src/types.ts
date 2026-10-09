@@ -4,6 +4,8 @@
  */
 export type Player = 'X' | 'O';
 export type Cell = Player | null;
+// utilizing readonly tuples to enforce the 4x4 constraints at compile time,
+//  prevents accidental mutation of the board anywhere in the engine.
 export type Row = readonly [Cell, Cell, Cell, Cell];
 export type Board = readonly [Row, Row, Row, Row];
 export type Coordinate = readonly [row: 0 | 1 | 2 | 3, col: 0 | 1 | 2 | 3];

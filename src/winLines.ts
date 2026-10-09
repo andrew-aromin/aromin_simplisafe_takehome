@@ -5,6 +5,7 @@ import { BOARD_SIZE } from './types.ts';
  * Generates an array of numbers from 0 to n-1.
  * Used as a utility for iterating over board dimensions.
  */
+//used const instead of function since it's a simple one line utility
 const range = (n: number) => Array.from({ length: n }, (_, i) => i);
 
 /**
@@ -71,7 +72,12 @@ function deepFreeze<T>(obj: T): T {
   return Object.freeze(obj) as T;
 }
 
-/** Ordered: rows → columns → diagonals → corners → 2x2 boxes. Deep-frozen. */
+/**
+ * Generates a static array of all possible winning coordinate lines exactly once when the file is loaded into memory.
+ * Optimized over the naive approach to checking the 2x2 boxes or diagonals, since that would involve nested for-loops
+ *  recalculating indices every time checkWinner() is called.
+ * */
+// ordered: rows → columns → diagonals → corners → 2x2 boxes. Deep-frozen.
 export const WIN_LINES: readonly WinLine[] = deepFreeze([
   ...generateRows(),
   ...generateColumns(),
